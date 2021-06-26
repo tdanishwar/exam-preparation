@@ -1,0 +1,42 @@
+---
+
+- name: subscribing the redhat managed nodes
+  hosts: all
+  vars_files:
+          - subscription-vault.yml
+
+  tasks:
+          - name: redhat subscription manager
+            redhat_subscription:
+                    state: present
+                    password: '{{ mypassword }}'
+                    username: tajdanishwar
+                    auto_attach: true
+
+          - name: updating all the packages
+            yum:
+                    name: '*'
+                    state: latest
+
+          - name: installing bash-completion and vim packages
+            yum:
+                    name:
+                            - bash-completion
+                            - vim
+                            - python38
+                    state: latest
+            register: results_install
+
+          - name: rebooting the system
+            reboot:
+            register: reboot_result
+            when: results_install.changed == true
+
+
+          - name: ensure that systems rebooted successfully
+            wait_for:
+                    port: 22
+                    timeout: 300
+                    delay: 1
+            when: reboot_result.changed == true
+

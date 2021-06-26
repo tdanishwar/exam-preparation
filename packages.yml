@@ -1,0 +1,24 @@
+---
+
+- name: install packages
+  hosts: dev, test, prod
+
+  tasks:
+          - name: installing mariadb and php packages on host groups dev, test and prod
+            yum:
+                    name:
+                            - php
+                            - mariadb
+                    state: latest
+
+          - name: installing Development Tools package on dev host groups
+            yum:
+                    name: '@Development Tools'
+                    state: latest
+            when: '"dev" in group_names'
+
+          - name: updating all the packages on dev host groups
+            yum:
+                    name: '*'
+                    state: latest
+            when: '"dev" in group_names'
