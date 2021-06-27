@@ -1,0 +1,48 @@
+---
+
+- name: create user accounts
+  hosts: dev,test
+  vars_files:
+          - user_list.yml
+          - vault.yml
+
+  tasks:
+          - name: ensure that group name devops exists
+            group:
+                    name: devops
+                    state: present
+
+          - name: creating users on dev and test host groups
+            user:
+                    name: '{{ item.name }}'
+                    comment: '{{ item.job }}'
+                    password: "{{ dev_pass | password_hash('sha512') }}"
+                    update_password: on_create
+                    groups: devops
+                    append: yes
+            when: 'item.job == "developer"'
+            loop: '{{ user }}'
+
+- name: create user accounts
+  hosts: prod
+  vars_files:
+          - user_list.yml
+          - vault.yml
+
+  tasks:
+          - name: ensure that group name opsmgr exists
+            group:
+                    name: opsmgr
+                    state: present
+
+          - name: creating users on prod host group
+            user:
+                    name: '{{ item.name }}'
+                    comment: '{{ item.job }}'
+                    password: "{{ mgr_pass | password_hash('sha512') }}"
+                    update_password: on_create
+                    groups: opsmgr
+                    append: yes
+            when: 'item.job == "manager"'
+            loop: '{{ user }}'
+

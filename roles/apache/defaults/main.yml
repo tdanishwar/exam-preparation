@@ -1,0 +1,8 @@
+---
+# defaults file for apache
+apache_package: httpd
+apache_service: httpd
+web_services:
+        - http
+        - https
+

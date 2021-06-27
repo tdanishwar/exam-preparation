@@ -1,0 +1,20 @@
+---
+
+- name: installing rhel system role on control machine
+  hosts: localhost
+
+  tasks:
+          - name: installing rhel-system-roles package
+            yum:
+                    name: rhel-system-roles
+                    state: latest
+
+- name: using rhel system role
+  hosts: all
+  tasks:
+  vars:
+    timesync_ntp_servers:
+      - hostname: 192.168.10.254
+        iburst: yes
+  roles:
+    - rhel-system-roles.timesync

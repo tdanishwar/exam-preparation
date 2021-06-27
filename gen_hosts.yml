@@ -1,0 +1,11 @@
+---
+
+- name: generating a host file
+  hosts: all
+
+  tasks:
+          - name: generate host file on dev host group
+            template:
+                    src: ./hosts.j2
+                    dest: /etc/hosts
+            when: '"dev" in group_names'

@@ -1,0 +1,12 @@
+---
+
+- name: configuring load balancer
+  hosts: balancer
+  roles:
+          - balancer
+
+
+- name: configuring php on webservers
+  hosts: webservers
+  roles:
+          - phphello

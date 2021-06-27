@@ -1,0 +1,89 @@
+---
+
+- name: generate HW report
+  hosts: all
+  vars:
+          hw_not_exist: NONE
+          file_path: /root/hwreport.txt
+
+
+  tasks:
+          - name: download hwreport.empty file and store it under /
+            get_url:
+                    url: http://192.168.168.103/ex407/hwreport.empty
+                    dest: '{{ file_path }}'
+
+          #When hardware items exist
+
+          - name: getting the hostname of managed node
+            replace:
+                    path: '{{ file_path }}'
+                    regexp: 'hostname'
+                    replace: '{{ ansible_hostname }}'
+            when: ansible_hostname is defined
+
+          - name: getting the Total memory of managed node
+            replace:
+                    path: '{{ file_path }}'
+                    regexp: 'memory'
+                    replace: '{{ ansible_memtotal_mb }} MB'
+            when: ansible_memtotal_mb is defined
+
+          - name: getting the bios version of managed node
+            replace:
+                    path: '{{ file_path }}'
+                    regexp: 'biosversion'
+                    replace: '{{ ansible_bios_version }}'
+            when: ansible_bios_version is defined
+
+          - name: getting the size of sda disk of managed node
+            replace:
+                    path: '{{ file_path }}'
+                    regexp: 'vdasize'
+                    replace: "{{ ansible_devices['sda']['size'] }}"
+            when: ansible_devices['sda']['size'] is defined
+
+          - name: getting the size of sdb disk of managed node
+            replace:
+                    path: '{{ file_path }}'
+                    regexp: 'vdbsize'
+                    replace: "{{ ansible_devices['sdb']['size'] }}"
+            when: ansible_devices['sdb']['size'] is defined
+
+         
+          # When Hardware Item doesnt exists
+
+          - name: getting the hostname of managed node
+            replace:
+                    path: '{{ file_path }}'
+                    regexp: 'hostname'
+                    replace: '{{ hw_not_exist }}'
+            when: ansible_hostname is not defined
+
+          - name: getting the Total memory of managed node
+            replace:
+                    path: '{{ file_path }}'
+                    regexp: 'memory'
+                    replace: '{{ hw_not_exist }}'
+            when: ansible_memtotal_mb is not defined
+
+          - name: getting the bios version of managed node
+            replace:
+                    path: '{{ file_path }}'
+                    regexp: 'biosversion'
+                    replace: '{{ hw_not_exist }}'
+            when: ansible_bios_version is not defined
+
+          - name: getting the size of sda disk of managed node
+            replace:
+                    path: '{{ file_path }}'
+                    regexp: 'vdasize'
+                    replace: '{{ hw_not_exist }}'
+            when: ansible_devices['sda']['size'] is not defined
+
+          - name: getting the size of sdb disk of managed node
+            replace:
+                    path: '{{ file_path }}'
+                    regexp: 'vdbsize'
+                    replace: '{{ hw_not_exist }}'
+            when: ansible_devices['sdb']['size'] is not defined

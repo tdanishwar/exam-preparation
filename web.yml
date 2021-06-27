@@ -1,0 +1,33 @@
+---
+
+- name: configure web content directory
+  hosts: dev
+  vars:
+          directory_path: /webdev
+
+  tasks:
+          - name: creating a directory /webdev
+            file:
+                    path: '{{ directory_path }}'
+                    state: directory
+                    group: apache
+                    mode: u=rwx,g=rwx,o=rx,g+s
+
+          - name: creating a symbolic link
+            file:
+                    src: '{{ directory_path }}'
+                    dest: /var/www/html/webdev
+                    state: link
+
+          - name: creating a file index.html
+            copy:
+                    content: 'Development'
+                    dest: '{{ directory_path }}/index.html'
+            notify:
+                    - restart web service
+  handlers:
+          - name: restart web service
+            service:
+                    name: httpd
+                    state: restarted
+

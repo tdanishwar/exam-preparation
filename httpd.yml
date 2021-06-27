@@ -1,0 +1,7 @@
+---
+
+- name: installing and configuring web servers
+  hosts: webservers
+
+  roles:
+          - apache

@@ -5,7 +5,8 @@ node1.mylab.local
 node2.mylab.local
 
 [prod]
-node[3:4].mylab.local
+node3.mylab.local
+node4.mylab.local
 
 [balancer]
 node5.mylab.local

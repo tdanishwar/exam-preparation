@@ -1,0 +1,44 @@
+---
+
+- name: create and user partition
+  hosts: all
+
+  tasks:
+          - name: ensure that /dev/sdb disk exits
+            debug:
+                    msg: 'Devices is not present'
+            when: ansible_devices_sdb is not defined
+
+          - name: creating a single partition with size of 1500MiB
+            parted:
+                    device: /dev/sdb
+                    number: 1
+                    part_end: 1500MiB
+                    state: present
+            when: ansible_devices['sdb']['size'] >= '1500 MiB'
+
+          - name: if the requested partition can not be created
+            debug:
+                    msg: 'Requested size is not present'
+            when: ansible_devices['sdb']['size'] < '1500 MiB'
+
+          - name: creating a single partiton with size of 800MiB
+            parted:
+                    device: /dev/sdb
+                    number: 1
+                    part_end: 800MiB
+                    state: present
+            when: ansible_devices['sdb']['size'] < '1500 MiB'
+
+          - name: creating a file system on disk /dev/sdb1
+            filesystem:
+                    dev: /dev/sdb1
+                    fstype: ext4
+
+          - name: mounting /dev/sdb1 partition on /mount1 mount point
+            mount:
+                    src: /dev/sdb1
+                    path: /mount1
+                    fstype: ext4
+                    state: present
+

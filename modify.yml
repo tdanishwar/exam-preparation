@@ -1,0 +1,26 @@
+---
+
+- name: modify file content
+  hosts: all
+  vars:
+          file_path: /etc/issue
+
+  tasks:
+          - name: replaces the contents of /etc/issue on dev host group
+            copy:
+                    content: "Development"
+                    dest: '{{ file_path }}'
+            when: '"dev" in group_names'
+
+          - name: replaces the contents of /etc/issue on test host group
+            copy:
+                    content: "Test"
+                    dest: '{{ file_path }}'
+            when: '"test" in group_names'
+
+          - name: replaces the contents of /etc/issue on prod host group
+            copy:
+                    content: 'Production'
+                    dest: '{{ file_path }}'
+            when: '"prod" in group_names'
+

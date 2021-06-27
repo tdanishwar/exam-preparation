@@ -1,0 +1,6 @@
+---
+# handlers file for hellophp
+- name: restart web service
+  service:
+          name: httpd
+          state: restarted
