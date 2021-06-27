@@ -1,0 +1,19 @@
+---
+
+- name: working with stat
+  hosts: dev
+
+  tasks:
+          - name: getting the stats of /etc/issue file
+            stat:
+                    path: /etc/issue
+                    checksum_algorithm: md5
+            register: stat_result
+
+          - name: displaying the stat results
+            debug:
+                    var: stat_result
+
+          - name: getting the checksum of file /etc/issue
+            debug:
+                    msg: "The checksum of file is: {{ stat_result['stat']['checksum'] }}"
